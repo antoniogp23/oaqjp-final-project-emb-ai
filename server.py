@@ -1,6 +1,7 @@
 '''
 Server.py
 '''
+
 from flask import Flask, render_template, request
 from EmotionDetection import emotion_detector
 
@@ -13,15 +14,14 @@ def sent_detector():
     '''
     text_to_analyze = request.args.get('textToAnalyze')
 
-    #Check if text to analyze 
+    #Check if text to analyze
     if not text_to_analyze:
-        return 'No text provided', 400
-    
+        return 'Invalid text! Please try again!', 400
     formated_response = emotion_detector(text_to_analyze)
 
 
-    if not formated_response['dominant_emotion']:
-        return 'Invalid or nonexistent text'
+    if formated_response['dominant_emotion'] is None:
+        return 'Invalid text! Please try again!', 400
 
     return (
         f"For the given statement, the system response is 'anger' : {formated_response['anger']}, "
@@ -38,5 +38,11 @@ def render_index_page():
     '''
     return render_template('index.html')
 
-if __name__ == '__main__':
+def run_emotion_detection():
+    '''
+    Main
+    '''
     app.run(host='0.0.0.0', port=5000)
+
+if __name__ == "__main__":
+    run_emotion_detection()
